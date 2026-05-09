@@ -1110,6 +1110,573 @@ footer {
 }
 
 /* ============================================================
+   3D STADIUM SCENE
+   ============================================================ */
+.stadium-section {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.stadium {
+  position: relative;
+  height: 80vh;
+  min-height: 600px;
+  max-height: 800px;
+  perspective: 1400px;
+  perspective-origin: 50% 30%;
+  background:
+    linear-gradient(180deg, #1a0f2e 0%, #0d0820 40%, #1a0f0a 70%, #2d1a05 100%);
+  overflow: hidden;
+}
+
+/* Stadium lights at top */
+.stadium-lights {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 30%;
+  pointer-events: none;
+  z-index: 1;
+}
+.light-beam {
+  position: absolute;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(245,179,1,0.3) 0%, transparent 100%);
+  filter: blur(20px);
+  transform-origin: top center;
+}
+.light-beam.l1 { left: 10%; transform: rotate(-12deg); animation: lightSway 6s ease-in-out infinite; }
+.light-beam.l2 { left: 35%; transform: rotate(-4deg); animation: lightSway 6s ease-in-out infinite -2s; opacity: 0.8; }
+.light-beam.l3 { right: 35%; transform: rotate(4deg); animation: lightSway 6s ease-in-out infinite -3s; }
+.light-beam.l4 { right: 10%; transform: rotate(12deg); animation: lightSway 6s ease-in-out infinite -4s; opacity: 0.7; }
+@keyframes lightSway {
+  0%, 100% { opacity: 0.6; transform: rotate(var(--r, 0deg)) scaleY(1); }
+  50%      { opacity: 1; transform: rotate(var(--r, 0deg)) scaleY(1.05); }
+}
+
+/* Stadium crowd silhouette */
+.stadium-crowd {
+  position: absolute;
+  bottom: 35%;
+  left: 0; right: 0;
+  height: 25%;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(107,31,184,0.25), transparent 70%);
+  z-index: 2;
+}
+.stadium-crowd::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  background-image:
+    radial-gradient(circle at 5% 50%, rgba(20,15,30,0.95) 8px, transparent 9px),
+    radial-gradient(circle at 12% 60%, rgba(20,15,30,0.95) 10px, transparent 11px),
+    radial-gradient(circle at 20% 45%, rgba(20,15,30,0.95) 9px, transparent 10px),
+    radial-gradient(circle at 28% 55%, rgba(20,15,30,0.95) 8px, transparent 9px),
+    radial-gradient(circle at 36% 50%, rgba(20,15,30,0.95) 11px, transparent 12px),
+    radial-gradient(circle at 44% 60%, rgba(20,15,30,0.95) 9px, transparent 10px),
+    radial-gradient(circle at 52% 48%, rgba(20,15,30,0.95) 10px, transparent 11px),
+    radial-gradient(circle at 60% 55%, rgba(20,15,30,0.95) 8px, transparent 9px),
+    radial-gradient(circle at 68% 50%, rgba(20,15,30,0.95) 11px, transparent 12px),
+    radial-gradient(circle at 76% 60%, rgba(20,15,30,0.95) 9px, transparent 10px),
+    radial-gradient(circle at 84% 45%, rgba(20,15,30,0.95) 10px, transparent 11px),
+    radial-gradient(circle at 92% 55%, rgba(20,15,30,0.95) 8px, transparent 9px);
+  background-size: 100% 100%;
+}
+
+/* 3D Pitch */
+.pitch-3d {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%) rotateX(72deg);
+  width: 200%;
+  height: 70%;
+  background:
+    repeating-linear-gradient(90deg,
+      #0d6e2e 0px, #0d6e2e 80px,
+      #0a5a25 80px, #0a5a25 160px);
+  transform-origin: 50% 100%;
+  box-shadow: 0 0 100px rgba(0,0,0,0.8) inset;
+  z-index: 3;
+}
+.pitch-3d::before {
+  /* pitch lines */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, transparent 49.7%, rgba(255,255,255,0.6) 49.7%, rgba(255,255,255,0.6) 50.3%, transparent 50.3%),
+    radial-gradient(circle at 50% 0%, transparent 80px, rgba(255,255,255,0.4) 80px, rgba(255,255,255,0.4) 84px, transparent 84px);
+}
+.pitch-3d::after {
+  /* gradient haze */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4), transparent 30%, transparent 70%, rgba(0,0,0,0.6));
+}
+
+/* Animated soccer ball */
+.flying-ball {
+  position: absolute;
+  top: 35%; left: 50%;
+  width: 80px;
+  height: 80px;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  animation: ballArc 5s ease-in-out infinite;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
+}
+.flying-ball svg {
+  width: 100%;
+  height: 100%;
+  animation: ballSpin 1.2s linear infinite;
+}
+@keyframes ballArc {
+  0%   { transform: translate(-180%, 50%) scale(0.7); }
+  25%  { transform: translate(-50%, -100%) scale(1.1); }
+  50%  { transform: translate(80%, 50%) scale(0.7); }
+  75%  { transform: translate(-50%, -100%) scale(1.1); }
+  100% { transform: translate(-180%, 50%) scale(0.7); }
+}
+@keyframes ballSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Ball shadow on pitch */
+.ball-shadow {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  width: 60px;
+  height: 12px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 70%);
+  transform: translateX(-50%);
+  z-index: 4;
+  animation: shadowMove 5s ease-in-out infinite;
+  filter: blur(4px);
+}
+@keyframes shadowMove {
+  0%   { transform: translateX(-280%) scale(1.3, 0.7); opacity: 0.7; }
+  25%  { transform: translateX(-150%) scale(0.5, 0.3); opacity: 0.3; }
+  50%  { transform: translateX(-20%) scale(1.3, 0.7); opacity: 0.7; }
+  75%  { transform: translateX(-150%) scale(0.5, 0.3); opacity: 0.3; }
+  100% { transform: translateX(-280%) scale(1.3, 0.7); opacity: 0.7; }
+}
+
+/* Floating text overlay on stadium */
+.stadium-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  text-align: center;
+  padding: 0 20px;
+  pointer-events: none;
+}
+.stadium-overlay .tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  background: rgba(7,6,10,0.5);
+  padding: 8px 20px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+.stadium-overlay h2 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 9vw, 7rem);
+  letter-spacing: 2px;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow: 0 0 40px rgba(245,179,1,0.6), 0 4px 12px rgba(0,0,0,0.8);
+  margin-bottom: 16px;
+}
+.stadium-overlay h2 .accent {
+  display: block;
+  background: linear-gradient(120deg, var(--gold), #ffd34a, var(--gold-glow));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stadium-overlay p {
+  font-size: 1.1rem;
+  color: var(--white);
+  max-width: 540px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.9);
+}
+
+/* Confetti particles */
+.confetti {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  z-index: 15;
+  animation: confettiFall linear infinite;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ============================================================
+   GAME SHOWCASE — auto carousel of phone screens
+   ============================================================ */
+.showcase {
+  background: linear-gradient(180deg, transparent, rgba(13,11,19,0.6), transparent);
+  overflow: hidden;
+}
+.showcase-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.phone-frame {
+  position: relative;
+  width: 320px;
+  height: 640px;
+  margin: 0 auto;
+  background: linear-gradient(160deg, #2a2438, #15111c);
+  border-radius: 44px;
+  padding: 14px;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 80px rgba(245,179,1,0.15),
+    inset 0 0 0 2px rgba(245,179,1,0.2);
+  perspective: 1000px;
+  transform: rotateY(-12deg) rotateX(4deg);
+  transform-style: preserve-3d;
+  animation: phoneFloat 6s ease-in-out infinite;
+}
+@keyframes phoneFloat {
+  0%, 100% { transform: rotateY(-12deg) rotateX(4deg) translateY(0); }
+  50%      { transform: rotateY(-8deg) rotateX(2deg) translateY(-12px); }
+}
+
+/* Phone notch */
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 24px;
+  background: var(--black);
+  border-radius: 0 0 16px 16px;
+  z-index: 10;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  background: var(--black);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  padding: 50px 18px 18px;
+}
+.slide.active { opacity: 1; transform: translateX(0); }
+
+/* Slide 1 — Match HUD */
+.slide.match-hud {
+  background:
+    linear-gradient(180deg, rgba(7,6,10,0.7), rgba(7,6,10,0.3) 30%, rgba(7,6,10,0.85)),
+    repeating-linear-gradient(90deg, #0d6e2e 0px, #0d6e2e 30px, #0a5a25 30px, #0a5a25 60px);
+}
+.match-hud .score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(7,6,10,0.7);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  margin-bottom: auto;
+}
+.team-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.team-mini .crest {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--gold);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  color: var(--black);
+  font-size: 14px;
+}
+.team-mini .crest.away { background: var(--purple-bright); color: var(--white); }
+.team-mini .name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--white);
+}
+.score-bar .score {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--gold);
+}
+.match-hud .timer-pill {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  background: rgba(7,6,10,0.6);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin: 12px auto;
+  display: inline-block;
+  align-self: center;
+}
+.match-hud .action-btn {
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--font-display);
+  letter-spacing: 2px;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  margin-top: auto;
+  box-shadow: 0 0 20px rgba(245,179,1,0.4);
+  animation: btnPulse 1.5s ease-in-out infinite;
+}
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(245,179,1,0.4); }
+  50%      { box-shadow: 0 0 35px rgba(245,179,1,0.7); }
+}
+
+/* Slide 2 — Leaderboard */
+.slide.leaderboard {
+  background: linear-gradient(180deg, #1a0f2e, #0d0820);
+}
+.leaderboard h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.lb-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  background: rgba(245,179,1,0.05);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.lb-row.first {
+  background: linear-gradient(90deg, rgba(245,179,1,0.2), rgba(245,179,1,0.05));
+  border-color: var(--gold);
+}
+.lb-row .rank {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--gold);
+  text-align: center;
+}
+.lb-row.first .rank { color: var(--gold); font-size: 18px; }
+.lb-row .player { color: var(--white); font-weight: 600; }
+.lb-row .pts {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold);
+}
+
+/* Slide 3 — Player card collection */
+.slide.collection {
+  background: radial-gradient(ellipse at top, #2d1a05, #0d0820);
+  align-items: center;
+  justify-content: center;
+}
+.collection h4 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 16px;
+}
+.card-grid-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.mini-pc {
+  aspect-ratio: 3/4;
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--gold), var(--gold-deep));
+  padding: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  color: var(--black);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+.mini-pc::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+  background-size: 200% 200%;
+  animation: shimmerCard 3s linear infinite;
+  pointer-events: none;
+}
+.mini-pc.bronze { background: linear-gradient(160deg, #cd7f32, #8b4513); color: var(--white); }
+.mini-pc.silver { background: linear-gradient(160deg, #c0c0c0, #808080); color: var(--black); }
+.mini-pc .rt { font-size: 22px; line-height: 1; }
+.mini-pc .nm { font-size: 11px; letter-spacing: 1px; }
+.mini-pc .emoji { font-size: 36px; text-align: center; }
+
+/* Slide 4 — Tournament */
+.slide.tournament {
+  background:
+    linear-gradient(180deg, rgba(107,31,184,0.4), rgba(7,6,10,0.95)),
+    radial-gradient(circle at 50% 30%, rgba(245,179,1,0.3), transparent);
+  align-items: center;
+  text-align: center;
+}
+.tournament .trophy {
+  font-size: 90px;
+  margin: 20px auto;
+  filter: drop-shadow(0 10px 30px rgba(245,179,1,0.6));
+  animation: trophyShine 3s ease-in-out infinite;
+}
+@keyframes trophyShine {
+  0%, 100% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 10px 30px rgba(245,179,1,0.6)); }
+  50%      { transform: scale(1.05) rotate(3deg); filter: drop-shadow(0 15px 40px rgba(245,179,1,0.9)); }
+}
+.tournament h4 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.tournament p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.prize-pill {
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 2px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+/* Carousel controls */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+.dot {
+  width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  padding: 0;
+}
+.dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(245,179,1,0.6);
+  width: 40px;
+}
+
+.showcase-text .feature-list {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.showcase-text .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: rgba(245,179,1,0.04);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+}
+.showcase-text .feature-item.active {
+  background: rgba(245,179,1,0.10);
+  border-color: var(--gold);
+  transform: translateX(8px);
+}
+.showcase-text .feature-item .ico {
+  font-size: 24px;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(7,6,10,0.6);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.showcase-text .feature-item .txt {
+  flex: 1;
+}
+.showcase-text .feature-item .nm {
+  font-family: var(--font-display);
+  letter-spacing: 1.5px;
+  font-size: 16px;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.showcase-text .feature-item .ds {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ============================================================
    HAMBURGER MENU
    ============================================================ */
 .hamburger {
@@ -1234,6 +1801,14 @@ body.drawer-open { overflow: hidden; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
 
+  /* Showcase stacks */
+  .showcase-inner { grid-template-columns: 1fr; gap: 50px; }
+  .showcase-text { order: 2; }
+
+  /* Stadium */
+  .stadium { height: 70vh; min-height: 500px; }
+  .stadium-overlay h2 { font-size: clamp(2.5rem, 8vw, 5rem); }
+
   /* Show hamburger, hide nav CTA on tablet/mobile */
   .hamburger { display: block; }
   .nav-cta { display: none; }
@@ -1290,6 +1865,12 @@ body.drawer-open { overflow: hidden; }
   /* Ensure socials are tappable */
   .socials { gap: 14px; }
   .socials a { width: 52px; height: 52px; }
+
+  /* Phone showcase mobile */
+  .phone-frame { width: 260px; height: 520px; }
+  .stadium { height: 60vh; min-height: 460px; }
+  .flying-ball { width: 60px; height: 60px; }
+  .stadium-overlay .tag { font-size: 11px; padding: 6px 16px; }
 }
 
 /* Reduced motion */
@@ -1330,8 +1911,8 @@ body.drawer-open { overflow: hidden; }
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
   <a href="#about" data-close>About</a>
+  <a href="#showcase" data-close>Game Modes</a>
   <a href="#" data-close>Perks</a>
-  <a href="#" data-close>Features</a>
   <a href="#waitlist" data-close>Beta Waitlist</a>
   <div class="mobile-drawer-cta">
     <a href="#waitlist" data-close>JOIN BETA →</a>
@@ -1441,6 +2022,195 @@ body.drawer-open { overflow: hidden; }
         <p class="body">
           The pitch is open. The crown is up for grabs. <strong>Will it be yours?</strong>
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D STADIUM SCENE -->
+<section class="stadium-section">
+  <div class="stadium" id="stadium">
+    <div class="stadium-lights">
+      <div class="light-beam l1"></div>
+      <div class="light-beam l2"></div>
+      <div class="light-beam l3"></div>
+      <div class="light-beam l4"></div>
+    </div>
+    <div class="stadium-crowd"></div>
+    <div class="pitch-3d"></div>
+    <div class="ball-shadow"></div>
+    <div class="flying-ball">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="ballGrad" cx="35%" cy="30%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="60%" stop-color="#e8e8e8"/>
+            <stop offset="100%" stop-color="#a0a0a0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="48" fill="url(#ballGrad)" stroke="#222" stroke-width="1"/>
+        <!-- Pentagon pattern -->
+        <polygon points="50,18 38,28 42,42 58,42 62,28" fill="#1a1a1a"/>
+        <polygon points="22,45 14,58 22,72 32,68 30,52" fill="#1a1a1a"/>
+        <polygon points="78,45 86,58 78,72 68,68 70,52" fill="#1a1a1a"/>
+        <polygon points="40,72 50,80 60,72 56,60 44,60" fill="#1a1a1a"/>
+        <line x1="42" y1="42" x2="30" y2="52" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="58" y1="42" x2="70" y2="52" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="44" y1="60" x2="32" y2="68" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="56" y1="60" x2="68" y2="68" stroke="#1a1a1a" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="stadium-overlay">
+      <div class="tag">⚡ THE ARENA AWAITS ⚡</div>
+      <h2>STEP INTO<span class="accent">THE STADIUM</span></h2>
+      <p>Built for the spotlight. Every match feels like a final.</p>
+    </div>
+    <!-- Confetti added by JS -->
+  </div>
+</section>
+
+<!-- GAME SHOWCASE CAROUSEL -->
+<section class="showcase" id="showcase">
+  <div class="container">
+    <div class="reveal" style="text-align:center; margin-bottom: 60px;">
+      <div class="section-tag" style="padding-left:0; display:inline-block;">
+        <span style="position:absolute; left:-36px; top:50%; width:24px; height:1px; background:var(--gold);"></span>
+        Inside the Game
+      </div>
+      <h2 class="section-title">See it in <span class="accent">action.</span></h2>
+      <p class="section-lead" style="margin: 0 auto;">Real screens from the beta build. Tap the features below or watch the auto-rotation.</p>
+    </div>
+
+    <div class="showcase-inner">
+      <div class="phone-frame reveal">
+        <div class="phone-screen">
+          <!-- Slide 1: Match HUD -->
+          <div class="slide match-hud active" data-slide="0">
+            <div class="score-bar">
+              <div class="team-mini">
+                <div class="crest">KK</div>
+                <div class="name">YOU</div>
+              </div>
+              <div class="score">2 - 1</div>
+              <div class="team-mini">
+                <div class="name">RIVAL</div>
+                <div class="crest away">RV</div>
+              </div>
+            </div>
+            <div class="timer-pill">⏱ 87:24</div>
+            <div style="text-align:center; margin: 20px 0;">
+              <div style="font-family: var(--font-display); font-size: 36px; color: var(--gold); letter-spacing: 2px;">GOAL!</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--white); letter-spacing: 2px;">+250 XP · STREAK x3</div>
+            </div>
+            <div class="action-btn">▸ KICKOFF</div>
+          </div>
+          <!-- Slide 2: Leaderboard -->
+          <div class="slide leaderboard" data-slide="1">
+            <h4>👑 GLOBAL TOP 5</h4>
+            <div class="lb-row first">
+              <div class="rank">1</div>
+              <div class="player">KingPitch_99</div>
+              <div class="pts">9,842</div>
+            </div>
+            <div class="lb-row">
+              <div class="rank">2</div>
+              <div class="player">StrikerElite</div>
+              <div class="pts">9,210</div>
+            </div>
+            <div class="lb-row">
+              <div class="rank">3</div>
+              <div class="player">MidfieldGod</div>
+              <div class="pts">8,975</div>
+            </div>
+            <div class="lb-row">
+              <div class="rank">4</div>
+              <div class="player">BootsOnFire</div>
+              <div class="pts">8,604</div>
+            </div>
+            <div class="lb-row">
+              <div class="rank">5</div>
+              <div class="player">YOU</div>
+              <div class="pts">8,440</div>
+            </div>
+            <div style="text-align:center; margin-top: 16px; font-family: var(--font-mono); font-size: 10px; color: var(--gold); letter-spacing: 2px;">SEASON ENDS IN 12d</div>
+          </div>
+          <!-- Slide 3: Card Collection -->
+          <div class="slide collection" data-slide="2">
+            <h4>YOUR SQUAD</h4>
+            <div class="card-grid-mini">
+              <div class="mini-pc">
+                <div class="rt">99</div>
+                <div class="emoji">⚽</div>
+                <div class="nm">FOUNDER</div>
+              </div>
+              <div class="mini-pc silver">
+                <div class="rt">87</div>
+                <div class="emoji">🥅</div>
+                <div class="nm">KEEPER</div>
+              </div>
+              <div class="mini-pc bronze">
+                <div class="rt">82</div>
+                <div class="emoji">🏃</div>
+                <div class="nm">WINGER</div>
+              </div>
+              <div class="mini-pc">
+                <div class="rt">94</div>
+                <div class="emoji">⚡</div>
+                <div class="nm">STRIKER</div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 4: Tournament -->
+          <div class="slide tournament" data-slide="3">
+            <div class="trophy">🏆</div>
+            <h4>WEEKLY CUP</h4>
+            <p>Top 16 advance to playoffs</p>
+            <div class="prize-pill">$5,000 PRIZE POOL</div>
+            <div style="margin-top: 20px; font-family: var(--font-mono); font-size: 10px; color: var(--gold); letter-spacing: 2px;">REGISTRATION OPEN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-text reveal">
+        <div class="section-tag">Game Modes</div>
+        <h2 class="section-title" style="font-size: clamp(2rem, 4vw, 3.2rem);">Four ways to <span class="accent">dominate.</span></h2>
+        <p class="section-lead" style="margin-bottom: 0;">Quick matches. Ranked ladders. Squad building. Real-money tournaments. Switch how you play, never how hard you play.</p>
+        <div class="feature-list">
+          <button class="feature-item active" data-target="0" type="button">
+            <div class="ico">⚔️</div>
+            <div class="txt">
+              <div class="nm">LIVE MATCH</div>
+              <div class="ds">Real-time 1v1 with scoreboard, streaks & combo XP</div>
+            </div>
+          </button>
+          <button class="feature-item" data-target="1" type="button">
+            <div class="ico">📊</div>
+            <div class="txt">
+              <div class="nm">GLOBAL LEADERBOARD</div>
+              <div class="ds">Climb the ranks. Top 100 get crowned each season.</div>
+            </div>
+          </button>
+          <button class="feature-item" data-target="2" type="button">
+            <div class="ico">🃏</div>
+            <div class="txt">
+              <div class="nm">CARD COLLECTION</div>
+              <div class="ds">Collect Bronze, Silver & Gold player cards. Build your dream squad.</div>
+            </div>
+          </button>
+          <button class="feature-item" data-target="3" type="button">
+            <div class="ico">🏆</div>
+            <div class="txt">
+              <div class="nm">TOURNAMENTS</div>
+              <div class="ds">Weekly cups with real prize pools. Compete worldwide.</div>
+            </div>
+          </button>
+        </div>
+        <div class="carousel-dots">
+          <button class="dot active" data-target="0" aria-label="Slide 1"></button>
+          <button class="dot" data-target="1" aria-label="Slide 2"></button>
+          <button class="dot" data-target="2" aria-label="Slide 3"></button>
+          <button class="dot" data-target="3" aria-label="Slide 4"></button>
+        </div>
       </div>
     </div>
   </div>
@@ -1816,6 +2586,82 @@ if (card && heroVis && window.matchMedia('(min-width: 980px)').matches) {
   heroVis.addEventListener('mouseleave', () => {
     card.style.transform = '';
   });
+}
+
+/* ============================================================
+   Showcase carousel — auto-rotate every 4s, manual override
+   ============================================================ */
+const slides = document.querySelectorAll('.showcase .slide');
+const dots = document.querySelectorAll('.showcase .dot');
+const featureItems = document.querySelectorAll('.showcase .feature-item');
+let currentSlide = 0;
+let autoRotate;
+
+function goToSlide(idx) {
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  featureItems.forEach((f, i) => f.classList.toggle('active', i === idx));
+  currentSlide = idx;
+}
+
+function startAutoRotate() {
+  clearInterval(autoRotate);
+  autoRotate = setInterval(() => {
+    currentSlide = (currentSlide + 1) % slides.length;
+    goToSlide(currentSlide);
+  }, 4000);
+}
+
+dots.forEach((d, i) => {
+  d.addEventListener('click', () => {
+    goToSlide(i);
+    startAutoRotate(); // restart timer on manual click
+  });
+});
+featureItems.forEach((f, i) => {
+  f.addEventListener('click', () => {
+    goToSlide(i);
+    startAutoRotate();
+  });
+});
+
+// Pause when off-screen, resume when in view
+const showcaseEl = document.getElementById('showcase');
+if (showcaseEl) {
+  const showcaseObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) startAutoRotate();
+      else clearInterval(autoRotate);
+    });
+  }, { threshold: 0.3 });
+  showcaseObs.observe(showcaseEl);
+}
+
+/* ============================================================
+   Stadium confetti — generate on scroll into view
+   ============================================================ */
+const stadium = document.getElementById('stadium');
+if (stadium) {
+  const colors = ['#f5b301', '#8a2be2', '#ffd34a', '#ffffff', '#6b1fb8'];
+  let confettiSpawned = false;
+  const stadiumObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !confettiSpawned) {
+        confettiSpawned = true;
+        for (let i = 0; i < 40; i++) {
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.left = Math.random() * 100 + '%';
+          c.style.background = colors[Math.floor(Math.random() * colors.length)];
+          c.style.animationDuration = (3 + Math.random() * 4) + 's';
+          c.style.animationDelay = (Math.random() * 5) + 's';
+          c.style.transform = `rotate(${Math.random() * 360}deg)`;
+          stadium.appendChild(c);
+        }
+      }
+    });
+  }, { threshold: 0.2 });
+  stadiumObs.observe(stadium);
 }
 </script>
 
